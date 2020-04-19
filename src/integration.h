@@ -66,5 +66,81 @@ class IntegratorTetrahedronP1{
 		static const std::vector<Real> WEIGHTS;
 		};
 
+		class IntegratorGaussTriangle2{
+	private:
+		static const std::vector<Real> w;
+
+	public:
+		//Number of nodes
+		static const UInt NNODES = 4;
+		//Point locations
+		static const std::vector<Point> NODES;
+		static const VectorXr WEIGHTS;
+};
+
+class IntegratorGaussTriangle3{
+	private:
+		static const std::vector<Real> w;
+
+	public:
+		//Number of nodes
+		static const UInt NNODES = 9;
+		//Point locations
+		static const std::vector<Point> NODES;
+		static const VectorXr WEIGHTS;
+};
+
+class IntegratorGaussTriangle4{
+	private:
+		static const std::vector<Real> w;
+
+	public:
+		//Number of nodes
+		static const UInt NNODES = 16;
+		//Point locations
+		static const std::vector<Point> NODES;
+		static const VectorXr WEIGHTS;
+};
+
+class IntegratorGaussTetra2
+{
+	private:
+		static const std::vector<Real> w;
+
+	public:
+		//Number of nodes
+		static const UInt NNODES = 8;
+		//Point locations
+		static const std::vector<Point> NODES;
+		static const VectorXr WEIGHTS;
+};
+
+class IntegratorGaussTetra3
+{
+	private:
+		static const std::vector<Real> w;
+
+	public:
+		//Number of nodes
+		static const UInt NNODES = 27;
+		//Point locations
+		static const std::vector<Point> NODES;
+		static const VectorXr WEIGHTS;
+};
+
+class IntegratorGaussTetra16
+{
+	private:
+		static const std::vector<Real> w;
+
+	public:
+		//Number of nodes
+		static const UInt NNODES = 16;
+		//Point locations
+		static const std::vector<Point> NODES;
+		static const VectorXr WEIGHTS;
+};
+
+
 //#include "integration_imp.hpp"
 #endif
