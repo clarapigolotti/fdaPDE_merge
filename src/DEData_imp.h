@@ -34,7 +34,7 @@ DEData::DEData(SEXP Rdata, SEXP Rorder, SEXP Rfvec, SEXP RheatStep, SEXP RheatIt
   nThreads_int_ = INTEGER(RnThreads_int)[0];
   nThreads_l_ = INTEGER(RnThreads_l)[0];
   nThreads_fold_ = INTEGER(RnThreads_fold)[0];
-  
+
 }
 
 #endif

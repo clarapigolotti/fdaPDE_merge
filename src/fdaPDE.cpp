@@ -438,7 +438,6 @@ SEXP DE_skeleton(SEXP Rdata, SEXP Rorder, SEXP Rfvec, SEXP RheatStep, SEXP Rheat
 	VectorXr g_sol = fede.getDensity_g();
 	std::vector<const VectorXr*> f_init = fede.getInitialDensity();
 	Real lambda_sol = fede.getBestLambda();
-
 	std::vector<Real> CV_errors = fede.getCvError();
 
 	std::vector<Point> data = dataProblem.getData();
@@ -486,6 +485,7 @@ SEXP DE_skeleton(SEXP Rdata, SEXP Rorder, SEXP Rfvec, SEXP RheatStep, SEXP Rheat
 
 	return(result);
 }
+
 
 template<typename Integrator, UInt ORDER, UInt mydim, UInt ndim>
 SEXP get_integration_points_skeleton(SEXP Rmesh)
@@ -988,60 +988,61 @@ SEXP Smooth_FPCA(SEXP Rlocations, SEXP RbaryLocations, SEXP Rdatamatrix, SEXP Rm
 
 	 // Density estimation (interface with R)
 
-	 //! This function manages the various options for DE-PDE algorithm
-	 /*!
-	 	This function is than called from R code.
-	 	\param Rdata an R-matrix containing the data.
-	 	\param Rmesh an R-object containg the output mesh from Trilibrary
-	 	\param Rorder an R-integer containing the order of the approximating basis.
-	 	\param Rmydim an R-integer containing the dimension of the problem we are considering.
-	 	\param Rndim an R-integer containing the dimension of the space in which the location are.
-	 	\param Rfvec an R-vector containing the the initial solution coefficients given by the user.
-	 	\param RheatStep an R-double containing the step for the heat equation initialization.
-	 	\para, RheatIter an R-integer containing the number of iterations to perfrom the heat equation initialization.
-	 	\param Rlambda an R-vector containing the penalization terms.
-	 	\param Rnfolds an R-integer specifying the number of folds for cross validation.
-	 	\param Rnsim an R-integer specifying the number of iterations to use in the optimization algorithm.
-	 	\param RstepProposals an R-vector containing the step parameters useful for the descent algotihm.
-	 	\param Rtol1 an R-double specifying the tolerance to use for the termination criterion based on the percentage differences.
-	 	\param Rtol2 an R-double specifying the tolerance to use for the termination criterion based on the norm of the gradient.
-	 	\param Rprint and R-integer specifying if print on console.
-	 	\param RnThreads_int an R-integer specifying the number of threads to paralllize the computation of integrals.
-	 	\param RnThreads_l an R-integer specifying the number of threads to paralllize the loop over smoothing parameters.
-	 	\param RnThreads_fold an R-integer specifying the number of threads to paralllize the loop over folds during cross-validation.
-	 	\param RstepMethod an R-string containing the method to use to choose the step in the optimization algorithm.
-	 	\param RdirectionMethod an R-string containing the descent direction to use in the optimization algorithm.
-	 	\param RpreprocessMethod an R-string containing the cross-validation method to use.
+//! This function manages the various options for DE-PDE algorithm
+/*!
+	This function is than called from R code.
+	\param Rdata an R-matrix containing the data.
+	\param Rmesh an R-object containg the output mesh from Trilibrary
+	\param Rorder an R-integer containing the order of the approximating basis.
+	\param Rmydim an R-integer containing the dimension of the problem we are considering.
+	\param Rndim an R-integer containing the dimension of the space in which the location are.
+	\param Rfvec an R-vector containing the the initial solution coefficients given by the user.
+	\param RheatStep an R-double containing the step for the heat equation initialization.
+	\para, RheatIter an R-integer containing the number of iterations to perfrom the heat equation initialization.
+	\param Rlambda an R-vector containing the penalization terms.
+	\param Rnfolds an R-integer specifying the number of folds for cross validation.
+	\param Rnsim an R-integer specifying the number of iterations to use in the optimization algorithm.
+	\param RstepProposals an R-vector containing the step parameters useful for the descent algotihm.
+	\param Rtol1 an R-double specifying the tolerance to use for the termination criterion based on the percentage differences.
+	\param Rtol2 an R-double specifying the tolerance to use for the termination criterion based on the norm of the gradient.
+	\param Rprint and R-integer specifying if print on console.
+	\param RnThreads_int an R-integer specifying the number of threads to paralllize the computation of integrals.
+	\param RnThreads_l an R-integer specifying the number of threads to paralllize the loop over smoothing parameters.
+	\param RnThreads_fold an R-integer specifying the number of threads to paralllize the loop over folds during cross-validation.
+	\param RstepMethod an R-string containing the method to use to choose the step in the optimization algorithm.
+	\param RdirectionMethod an R-string containing the descent direction to use in the optimization algorithm.
+	\param RpreprocessMethod an R-string containing the cross-validation method to use.
 
-	 	\return R-list containg solutions.
-	 */
+	\return R-list containg solutions.
+*/
 
-	 SEXP Density_Estimation(SEXP Rdata, SEXP Rmesh, SEXP Rorder, SEXP Rmydim, SEXP Rndim, SEXP Rfvec, SEXP RheatStep, SEXP RheatIter, SEXP Rlambda,
-	 	 SEXP Rnfolds, SEXP Rnsim, SEXP RstepProposals, SEXP Rtol1, SEXP Rtol2, SEXP Rprint, SEXP RnThreads_int, SEXP RnThreads_l,
-	 	 SEXP RnThreads_fold, SEXP RstepMethod, SEXP RdirectionMethod, SEXP RpreprocessMethod)
-	 {
-	 	UInt order= INTEGER(Rorder)[0];
-	   UInt mydim=INTEGER(Rmydim)[0];
-	 	UInt ndim=INTEGER(Rndim)[0];
+SEXP Density_Estimation(SEXP Rdata, SEXP Rmesh, SEXP Rorder, SEXP Rmydim, SEXP Rndim, SEXP Rfvec, SEXP RheatStep, SEXP RheatIter, SEXP Rlambda,
+	 SEXP Rnfolds, SEXP Rnsim, SEXP RstepProposals, SEXP Rtol1, SEXP Rtol2, SEXP Rprint, SEXP RnThreads_int, SEXP RnThreads_l,
+	 SEXP RnThreads_fold, SEXP RstepMethod, SEXP RdirectionMethod, SEXP RpreprocessMethod)
+{
+	UInt order= INTEGER(Rorder)[0];
+  UInt mydim=INTEGER(Rmydim)[0];
+	UInt ndim=INTEGER(Rndim)[0];
 
-	 	std::string step_method=CHAR(STRING_ELT(RstepMethod, 0));
-	 	std::string direction_method=CHAR(STRING_ELT(RdirectionMethod, 0));
-	 	std::string preprocess_method=CHAR(STRING_ELT(RpreprocessMethod, 0));
+	std::string step_method=CHAR(STRING_ELT(RstepMethod, 0));
+	std::string direction_method=CHAR(STRING_ELT(RdirectionMethod, 0));
+	std::string preprocess_method=CHAR(STRING_ELT(RpreprocessMethod, 0));
 
-	   if(order== 1 && mydim==2 && ndim==2)
-	 		return(DE_skeleton<IntegratorTriangleP2, IntegratorGaussTriangle3, 1, 2, 2>(Rdata, Rorder, Rfvec, RheatStep, RheatIter, Rlambda, Rnfolds, Rnsim, RstepProposals, Rtol1, Rtol2, Rprint, RnThreads_int, RnThreads_l, RnThreads_fold, Rmesh, step_method, direction_method, preprocess_method));
-	 	else if(order== 2 && mydim==2 && ndim==2)
-	 		return(DE_skeleton<IntegratorTriangleP4, IntegratorGaussTriangle4, 2, 2, 2>(Rdata, Rorder, Rfvec, RheatStep, RheatIter, Rlambda, Rnfolds, Rnsim, RstepProposals, Rtol1, Rtol2, Rprint, RnThreads_int, RnThreads_l, RnThreads_fold, Rmesh, step_method, direction_method, preprocess_method));
-	 	else if(order== 1 && mydim==2 && ndim==3)
-	 		return(DE_skeleton<IntegratorTriangleP2, IntegratorGaussTriangle3, 1, 2, 3>(Rdata, Rorder, Rfvec, RheatStep, RheatIter, Rlambda, Rnfolds, Rnsim, RstepProposals, Rtol1, Rtol2, Rprint, RnThreads_int, RnThreads_l, RnThreads_fold, Rmesh, step_method, direction_method, preprocess_method));
-	 	else if(order== 2 && mydim==2 && ndim==3)
-	 		return(DE_skeleton<IntegratorTriangleP4, IntegratorGaussTriangle4, 2, 2, 3>(Rdata, Rorder, Rfvec, RheatStep, RheatIter, Rlambda, Rnfolds, Rnsim, RstepProposals, Rtol1, Rtol2, Rprint, RnThreads_int, RnThreads_l, RnThreads_fold, Rmesh, step_method, direction_method, preprocess_method));
-	 	else if(order == 1 && mydim==3 && ndim==3)
-	 		return(DE_skeleton<IntegratorTetrahedronP2, IntegratorGaussTetra16, 1, 3, 3>(Rdata, Rorder, Rfvec, RheatStep, RheatIter, Rlambda, Rnfolds, Rnsim, RstepProposals, Rtol1, Rtol2, Rprint, RnThreads_int, RnThreads_l, RnThreads_fold, Rmesh, step_method, direction_method, preprocess_method));
-	 	// else if(order == 1 && mydim==3 && ndim==3)
-	 	// 	return(DE_skeleton<IntegratorTetrahedronP2, IntegratorTetrahedronP2, 1, 3, 3>(Rdata, Rorder, Rfvec, RheatStep, RheatIter, Rlambda, Rnfolds, Rnsim, RstepProposals, Rtol1, Rtol2, Rprint, RnThreads_int, RnThreads_l, RnThreads_fold, Rmesh, step_method, direction_method, preprocess_method));
+  if(order== 1 && mydim==2 && ndim==2)
+		return(DE_skeleton<IntegratorTriangleP2, IntegratorGaussTriangle3, 1, 2, 2>(Rdata, Rorder, Rfvec, RheatStep, RheatIter, Rlambda, Rnfolds, Rnsim, RstepProposals, Rtol1, Rtol2, Rprint, RnThreads_int, RnThreads_l, RnThreads_fold, Rmesh, step_method, direction_method, preprocess_method));
+	else if(order== 2 && mydim==2 && ndim==2)
+		return(DE_skeleton<IntegratorTriangleP4, IntegratorGaussTriangle4, 2, 2, 2>(Rdata, Rorder, Rfvec, RheatStep, RheatIter, Rlambda, Rnfolds, Rnsim, RstepProposals, Rtol1, Rtol2, Rprint, RnThreads_int, RnThreads_l, RnThreads_fold, Rmesh, step_method, direction_method, preprocess_method));
+	else if(order== 1 && mydim==2 && ndim==3)
+		return(DE_skeleton<IntegratorTriangleP2, IntegratorGaussTriangle3, 1, 2, 3>(Rdata, Rorder, Rfvec, RheatStep, RheatIter, Rlambda, Rnfolds, Rnsim, RstepProposals, Rtol1, Rtol2, Rprint, RnThreads_int, RnThreads_l, RnThreads_fold, Rmesh, step_method, direction_method, preprocess_method));
+	else if(order== 2 && mydim==2 && ndim==3)
+		return(DE_skeleton<IntegratorTriangleP4, IntegratorGaussTriangle4, 2, 2, 3>(Rdata, Rorder, Rfvec, RheatStep, RheatIter, Rlambda, Rnfolds, Rnsim, RstepProposals, Rtol1, Rtol2, Rprint, RnThreads_int, RnThreads_l, RnThreads_fold, Rmesh, step_method, direction_method, preprocess_method));
+	else if(order == 1 && mydim==3 && ndim==3)
+		return(DE_skeleton<IntegratorTetrahedronP2, IntegratorGaussTetra16, 1, 3, 3>(Rdata, Rorder, Rfvec, RheatStep, RheatIter, Rlambda, Rnfolds, Rnsim, RstepProposals, Rtol1, Rtol2, Rprint, RnThreads_int, RnThreads_l, RnThreads_fold, Rmesh, step_method, direction_method, preprocess_method));
+	// else if(order == 1 && mydim==3 && ndim==3)
+	// 	return(DE_skeleton<IntegratorTetrahedronP2, IntegratorTetrahedronP2, 1, 3, 3>(Rdata, Rorder, Rfvec, RheatStep, RheatIter, Rlambda, Rnfolds, Rnsim, RstepProposals, Rtol1, Rtol2, Rprint, RnThreads_int, RnThreads_l, RnThreads_fold, Rmesh, step_method, direction_method, preprocess_method));
 
-	 	return(NILSXP);
-	 }
+	return(NILSXP);
+}
+
 
 }

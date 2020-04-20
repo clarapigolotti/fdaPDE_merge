@@ -59,7 +59,7 @@
 #' @description This function implements a nonparametric density estimation method with differential regularization 
 #' (given by the square root of the L2 norm of the laplacian of the density function), when points are located over a 
 #' planar mesh. The computation relies only on the C++ implementation of the algorithm.
-#' @usage FEM.density(data, FEMbasis, lambda, fvec=NULL, heatStep=0.1, heatIter=500, stepProposals=NULL,
+#' @usage DE.FEM(data, FEMbasis, lambda, fvec=NULL, heatStep=0.1, heatIter=500, stepProposals=NULL,
 #' tol1=1e-4, tol2=0, print=FALSE, nThreads_int=2, nThreads_l=1, nThreads_fold=1, nfolds=NULL, nsimulations=500, 
 #' step_method, direction_method, preprocess_method="NoCrossValidation")
 #' @references 
@@ -88,7 +88,7 @@
 #' 
 #' ## Density Estimation
 #' lambda = 0.1
-#' sol <- FEM.density(data = data, FEMbasis = FEMbasis, lambda = lambda, fvec=NULL, heatStep=0.1,
+#' sol <- DE.FEM(data = data, FEMbasis = FEMbasis, lambda = lambda, fvec=NULL, heatStep=0.1,
 #'                   heatIter=500, stepProposals=NULL, tol1=1e-4, tol2=0, print=FALSE, nThreads_int=2,
 #'                   nThreads_l=1, nThreads_fold=1, nfolds=NULL, nsimulations=500, 
 #'                   step_method = "Fixed_Step", direction_method = "BFGS",
@@ -107,7 +107,7 @@
 #' image2D(x=X, y=Y, z=eval, col=heat.colors(100), xlab="x",ylab="y", contour=list(drawlabels = FALSE), main = "Estimated density")
 
 
-FEM.density <- function(data, FEMbasis, lambda, fvec=NULL, heatStep=0.1, heatIter=500, stepProposals=NULL,
+DE.FEM <- function(data, FEMbasis, lambda, fvec=NULL, heatStep=0.1, heatIter=500, stepProposals=NULL,
                         tol1=1e-4, tol2=0, print=FALSE, nThreads_int=2, nThreads_l=1, nThreads_fold=1,
                         nfolds=NULL, nsimulations=500, step_method, direction_method,
                         preprocess_method="NoCrossValidation") 
