@@ -96,8 +96,10 @@ class DataProblem{
     inline Point getPoint(Id id) const {return mesh_.getPoint(id);}
     //! A method returning an element. It calls the same method of MeshHandler class.
     inline Element<Nodes,mydim,ndim> getElement(Id id) const {return mesh_.getElement(id);}
-    //! A method returning the element in which he point in input is located. It calls the same method of MeshHandler class.
+    //! A method returning the element in which he point in input is located by using a naive search. It calls the same method of MeshHandler class.
     inline Element<Nodes,mydim,ndim> findLocationNaive(Point point) const {return mesh_.findLocationNaive(point);}
+    //! A method returning the element in which he point in input is located by using a tree search. It calls the same method of MeshHandler class.
+    inline Element<Nodes,mydim,ndim> findLocationTree(Point point) const {return mesh_.findLocationTree(point);}
 
     //getter for matrices
     //! A method returning the P matrix.

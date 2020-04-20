@@ -146,7 +146,8 @@ DataProblem<Integrator, Integrator_noPoly, ORDER, mydim, ndim>::computePsi(const
 
 	for(auto it = indices.cbegin(); it != indices.cend(); it++)
 	{
-		tri_activated = mesh_.findLocationNaive(deData_.getDatum(*it));
+		// tri_activated = mesh_.findLocationNaive(deData_.getDatum(*it));
+    tri_activated = mesh_.findLocationTree(deData_.getDatum(*it));
 		if(tri_activated.getId() == Identifier::NVAL)
 		{
 			#ifdef R_VERSION_
