@@ -12,6 +12,7 @@
 #include "DEData.h"
 #include "projection.h"
 
+// This file contains data informations for the Density Estimation problem 
 
 //! @brief A class to store common data for the problem.
 template<typename Integrator, typename Integrator_noPoly, UInt ORDER, UInt mydim, UInt ndim>

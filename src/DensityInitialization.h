@@ -1,6 +1,7 @@
 #ifndef _DENSITY_INITIALIZATION_HPP_
 #define _DENSITY_INITIALIZATION_HPP_
 
+// This file contains the initialization procedure for the Density Estimation problem 
 
 /*!  @brief An abstract base class dealing with the density initialization feature.
 */

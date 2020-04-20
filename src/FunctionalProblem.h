@@ -3,6 +3,8 @@
 
 #include "DataProblem.h"
 
+// This file implements the functionals of the Density Estimation problem 
+
 //! @brief A class to store methods regarding the functional of the problem.
 template<typename Integrator, typename Integrator_noPoly, UInt ORDER, UInt mydim, UInt ndim>
 class FunctionalProblem{

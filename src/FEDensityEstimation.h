@@ -4,6 +4,8 @@
 #include "PreprocessPhase.h"
 #include "Preprocess_factory.h"
 
+// This file is useful to perform the Density Estimation problem 
+
 /*! @brief A class to perform the whole density estimation problem.
 */
 template<typename Integrator, typename Integrator_noPoly, UInt ORDER, UInt mydim, UInt ndim>

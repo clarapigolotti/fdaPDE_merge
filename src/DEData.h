@@ -5,6 +5,8 @@
 #include "mesh_objects.h"
 #include <array>
 
+// This file contains the R/C++ data conversion for the Density Estimation problem
+
 /*!  @brief An IO handler class for objects passed from R.
  * This class, given the data from R, convert them in a C++ format, offering a
  * series of method for their access, so isolating the more the possible the specific
