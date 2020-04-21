@@ -57,12 +57,13 @@ if it is \code{Wolfe_Method}, the step is computed at each iteration according t
 \item{direction_method}{String. This parameter specifies which descent direction use in the descent algorithm. 
 If it is \code{Gradient}, the direction is the one given by the gradient descent method (the opposite to the gradient of
 the functional); if instead it is \code{BFGS} the direction is the one given by the BFGS method
- (Broyden Fletcher Goldfarb and Shanno, a Quasi-Newton method).
- @param preprocess_method String. This parameter specifies the k fold cross validation technique to use, if there is more
- than one smoothing parameter \code{lambda} (otherwise it should be \code{NULL}). If it is \code{RightCV} the usual k fold 
- cross validation method is performed. If it is \code{SimplifiedCV} a simplified version is performed. 
- In the latter case the number of smoothing parameters \code{lambda} must be equal to the number of folds \code{nfolds}.
- Default is \code{NULL}.}
+(Broyden Fletcher Goldfarb and Shanno, a Quasi-Newton method).}
+
+\item{preprocess_method}{String. This parameter specifies the k fold cross validation technique to use, if there is more
+than one smoothing parameter \code{lambda} (otherwise it should be \code{NULL}). If it is \code{RightCV} the usual k fold 
+cross validation method is performed. If it is \code{SimplifiedCV} a simplified version is performed. 
+In the latter case the number of smoothing parameters \code{lambda} must be equal to the number of folds \code{nfolds}.
+Default is \code{NULL}.}
 
 \item{nThread_int}{Integer specifying the number of threads to paralllize the computation of integrals. Default is 2. 
 N.B. Only one between \code{nThread_int}, \code{nThread_l}, \code{nThread_fold} can be 2, the others need to be 1.}
