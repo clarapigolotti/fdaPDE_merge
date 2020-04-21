@@ -1,4 +1,4 @@
-checkParametersDE <- function(data, FEMbasis, lambda, step_method, direction_method, preprocess_method, tol1, tol2, nfolds, nsimulations, nThreads_int, nThreads_l, nThreads_fold, heatStep, heatIter) 
+checkParametersDE <- function(data, FEMbasis, lambda, step_method, direction_method, preprocess_method, tol1, tol2, nfolds, nsimulations, nThreads_int, nThreads_l, nThreads_fold, heatStep, heatIter, search) 
 {
   #################### Parameter Check #########################
   if (is.null(data)) 
@@ -66,6 +66,13 @@ checkParametersDE <- function(data, FEMbasis, lambda, step_method, direction_met
   
   if(!is.numeric(heatIter) || heatIter<1)
     stop("'heatIter' needs to be a positive integer.")
+  
+  if(!is.numeric(search))
+    stop("'search' needs to be an integer.")
+  
+  if(search != 1 && search != 2)
+    stop("'search' needs to be an integer either equal to 1 or equal to 2.")
+  
 }
 
 

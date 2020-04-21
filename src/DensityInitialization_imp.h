@@ -70,8 +70,13 @@ HeatProcess<Integrator, Integrator_noPoly, ORDER, mydim, ndim>::computeDensityOn
 	VectorXr x = VectorXr::Zero(this->dataProblem_.getNumNodes());
 
 	for(UInt i=0; i<this->dataProblem_.getNumberofData(); i++){
-		// Element<Nodes, mydim, ndim> current_element = this->dataProblem_.findLocationNaive(this->dataProblem_.getDatum(i));
-    Element<Nodes, mydim, ndim> current_element = this->dataProblem_.findLocationTree(this->dataProblem_.getDatum(i));
+
+    Element<Nodes, mydim, ndim> current_element;
+    if(this->dataProblem_.getSearch() == 1) { //use Naive search
+      current_element = this->dataProblem_.findLocationNaive(this->dataProblem_.getDatum(i));
+    } else if (this->dataProblem_.getSearch() == 2) { //use Tree search (default)
+      current_element = this->dataProblem_.findLocationTree(this->dataProblem_.getDatum(i));
+    }
 
 		for(UInt j=0; j<Nodes; j++){
 				x[current_element[j].id()] += 1;

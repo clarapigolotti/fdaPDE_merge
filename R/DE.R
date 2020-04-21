@@ -47,7 +47,10 @@
 #' cross validation method is performed. If it is \code{SimplifiedCV} a simplified version is performed. 
 #' In the latter case the number of smoothing parameters \code{lambda} must be equal to the number of folds \code{nfolds}.
 #' Default is \code{NULL}.
+#' @param search An integer specifying the search algorithm to use. It is either 1 (Naive search algorithm) or 2 (Tree search algorithm).
+#' The default is 2.
 #' @return A list with the following variables:
+#' \item{\code{treeFEMbasis}}{}
 #' \item{\code{g}}{A vector of length #\code{nodes} that represents the value of the g-function estimated for each \code{node} of the mesh.
 #' The density is the exponential of this function.}
 #' \item{\code{f_init}}{A #\code{nodes}-by-#\code{lambda} parameters matrix. Each column contains the node values of the initial
@@ -56,12 +59,14 @@
 #' input there is a vector of parameters; the scalar given in input otherwise.}
 #' \item{\code{data}}{A matrix of dimensions #observations-by-ndim containing the data used in the algorithm. They are the 
 #' same given in input if the domain is 2D pr 3D; they are the original data projected on the mesh if the domain is 2.5D.}
+#' \item{\code{CV_err}}{A vector of length \code{nfolds} containing the cross validation errors obtained in each fold, if 
+#' \code{preprocess_method} is either \code{RightCV} or \code{SimplifiedCV}.}
 #' @description This function implements a nonparametric density estimation method with differential regularization 
 #' (given by the square root of the L2 norm of the laplacian of the density function), when points are located over a 
 #' planar mesh. The computation relies only on the C++ implementation of the algorithm.
 #' @usage DE.FEM(data, FEMbasis, lambda, fvec=NULL, heatStep=0.1, heatIter=500, stepProposals=NULL,
-#' tol1=1e-4, tol2=0, print=FALSE, nThreads_int=2, nThreads_l=1, nThreads_fold=1, nfolds=NULL, nsimulations=500, 
-#' step_method, direction_method, preprocess_method="NoCrossValidation")
+#' tol1=1e-4, tol2=0, print=FALSE, nThreads_int=2, nThreads_l=1, nThreads_fold=1, nfolds=NULL,
+#' nsimulations=500, step_method, direction_method, preprocess_method="NoCrossValidation", search = 2)
 #' @references 
 #' @export
 #' @examples
@@ -92,7 +97,7 @@
 #'                   heatIter=500, stepProposals=NULL, tol1=1e-4, tol2=0, print=FALSE, nThreads_int=2,
 #'                   nThreads_l=1, nThreads_fold=1, nfolds=NULL, nsimulations=500, 
 #'                   step_method = "Fixed_Step", direction_method = "BFGS",
-#'                   preprocess_method="NoCrossValidation")
+#'                   preprocess_method="NoCrossValidation", search = 2)
 #' 
 #' ## Visualization 
 #' n = 100
@@ -110,7 +115,7 @@
 DE.FEM <- function(data, FEMbasis, lambda, fvec=NULL, heatStep=0.1, heatIter=500, stepProposals=NULL,
                         tol1=1e-4, tol2=0, print=FALSE, nThreads_int=2, nThreads_l=1, nThreads_fold=1,
                         nfolds=NULL, nsimulations=500, step_method, direction_method,
-                        preprocess_method="NoCrossValidation") 
+                        preprocess_method="NoCrossValidation", search = 2) 
 { 
   if(class(FEMbasis$mesh) == "mesh.2D"){
     ndim = 2
@@ -126,7 +131,7 @@ DE.FEM <- function(data, FEMbasis, lambda, fvec=NULL, heatStep=0.1, heatIter=500
   }
   
   ###################### Checking parameters, sizes and conversion #################################
-  checkParametersDE(data, FEMbasis, lambda, step_method, direction_method, preprocess_method, tol1, tol2, nfolds, nsimulations, nThreads_int, nThreads_l, nThreads_fold, heatStep, heatIter) 
+  checkParametersDE(data, FEMbasis, lambda, step_method, direction_method, preprocess_method, tol1, tol2, nfolds, nsimulations, nThreads_int, nThreads_l, nThreads_fold, heatStep, heatIter, search) 
   
   ## Coverting to format for internal usage
   data = as.matrix(data)
@@ -145,16 +150,16 @@ DE.FEM <- function(data, FEMbasis, lambda, fvec=NULL, heatStep=0.1, heatIter=500
   if(class(FEMbasis$mesh) == 'mesh.2D'){	  
     print('C++ Code Execution')
     bigsol = CPP_FEM.DE(data, FEMbasis, lambda, fvec, heatStep, heatIter, ndim, mydim, step_method, direction_method, preprocess_method,
-                        stepProposals, tol1, tol2, print, nThreads_int, nThreads_l, nThreads_fold, nfolds, nsimulations)
+                        stepProposals, tol1, tol2, print, nThreads_int, nThreads_l, nThreads_fold, nfolds, nsimulations, search)
     
   } else if(class(FEMbasis$mesh) == 'mesh.2.5D'){
     print('C++ Code Execution')
     bigsol = CPP_FEM.manifold.DE(data, FEMbasis, lambda, fvec, heatStep, heatIter, ndim, mydim, step_method, direction_method, preprocess_method,
-                                 stepProposals, tol1, tol2, print, nThreads_int, nThreads_l, nThreads_fold, nfolds, nsimulations)
+                                 stepProposals, tol1, tol2, print, nThreads_int, nThreads_l, nThreads_fold, nfolds, nsimulations, search)
     
   } else if(class(FEMbasis$mesh) == 'mesh.3D'){
     bigsol = CPP_FEM.volume.DE(data, FEMbasis, lambda, fvec, heatStep, heatIter, ndim, mydim, step_method, direction_method, preprocess_method,
-                               stepProposals, tol1, tol2, print, nThreads_int, nThreads_l, nThreads_fold, nfolds, nsimulations)
+                               stepProposals, tol1, tol2, print, nThreads_int, nThreads_l, nThreads_fold, nfolds, nsimulations, search)
   }
   
   ###################### Collect Results ############################################################  
@@ -163,8 +168,26 @@ DE.FEM <- function(data, FEMbasis, lambda, fvec=NULL, heatStep=0.1, heatIter=500
   f_init = bigsol[[2]]
   lambda = bigsol[[3]]
   data = bigsol[[4]]
+  CV_err = bigsol[[5]]
+  
+  # Save information of Tree Mesh
+  tree_mesh = list(
+    treelev = bigsol[[6]][1],
+    header_orig= bigsol[[7]],
+    header_scale = bigsol[[8]],
+    node_id = bigsol[[9]][,1],
+    node_left_child = bigsol[[9]][,2],
+    node_right_child = bigsol[[9]][,3],
+    node_box= bigsol[[10]])
+
+  if (class(FEMbasis) != "treeFEMbasis") {
+    treeFEMbasis = FEMbasis
+    treeFEMbasis$mesh = append(FEMbasis$mesh, tree_mesh)
+    class(treeFEMbasis$mesh) = class(FEMbasis$mesh)
+    class(treeFEMbasis) = "treeFEMbasis"
+  }
   
   
-  reslist = list(g = g, f_init = f_init, lambda = lambda, data = data)
+  reslist = list(treeFEMbasis = treeFEMbasis, g = g, f_init = f_init, lambda = lambda, data = data, CV_err = CV_err)
   return(reslist)
 }

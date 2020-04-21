@@ -12,7 +12,7 @@
 #include "DEData.h"
 #include "projection.h"
 
-// This file contains data informations for the Density Estimation problem 
+// This file contains data informations for the Density Estimation problem
 
 //! @brief A class to store common data for the problem.
 template<typename Integrator, typename Integrator_noPoly, UInt ORDER, UInt mydim, UInt ndim>
@@ -32,7 +32,7 @@ class DataProblem{
   public:
     //! A constructor: it delegates DEData and MeshHandler costructors.
     DataProblem(SEXP Rdata, SEXP Rorder, SEXP Rfvec, SEXP RheatStep, SEXP RheatIter, SEXP Rlambda, SEXP Rnfolds, SEXP Rnsim, SEXP RstepProposals,
-      SEXP Rtol1, SEXP Rtol2, SEXP Rprint, SEXP Rmesh, SEXP RnThreads_int, SEXP RnThreads_l, SEXP RnThreads_fold);
+      SEXP Rtol1, SEXP Rtol2, SEXP Rprint, SEXP RnThreads_int, SEXP RnThreads_l, SEXP RnThreads_fold, SEXP Rsearch, SEXP Rmesh);
 
     //! A method to compute the integral of a function.
     inline Real FEintegrate(const VectorXr& f) const {return (R0_*f).sum();}
@@ -84,6 +84,8 @@ class DataProblem{
     inline UInt getNThreads_l() const {return deData_.getNThreads_l();}
     //! A method returning the number of threads to use in the omp parallelization to loop over folds during cross-validation. It calls the same method of DEData class.
     inline UInt getNThreads_fold() const {return deData_.getNThreads_fold();}
+    //! A method returning the integer that specifies the search algorithm type.
+    inline UInt getSearch() const {return deData_.getSearch();}
 
     //getter for mesh
     //! A method returning the mesh.

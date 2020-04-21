@@ -4,8 +4,8 @@
 template<typename Integrator, typename Integrator_noPoly, UInt ORDER, UInt mydim, UInt ndim>
 DataProblem<Integrator, Integrator_noPoly, ORDER, mydim, ndim>::DataProblem(SEXP Rdata, SEXP Rorder, SEXP Rfvec, SEXP RheatStep, SEXP RheatIter,
   SEXP Rlambda, SEXP Rnfolds, SEXP Rnsim, SEXP RstepProposals, SEXP Rtol1, SEXP Rtol2, SEXP Rprint, SEXP RnThreads_int, SEXP RnThreads_l,
-  SEXP RnThreads_fold, SEXP Rmesh):
-  deData_(Rdata, Rorder, Rfvec, RheatStep, RheatIter, Rlambda, Rnfolds, Rnsim, RstepProposals, Rtol1, Rtol2, Rprint, RnThreads_int, RnThreads_l, RnThreads_fold),
+  SEXP RnThreads_fold, SEXP Rsearch, SEXP Rmesh):
+  deData_(Rdata, Rorder, Rfvec, RheatStep, RheatIter, Rlambda, Rnfolds, Rnsim, RstepProposals, Rtol1, Rtol2, Rprint, RnThreads_int, RnThreads_l, RnThreads_fold, Rsearch),
    mesh_(Rmesh){
 
     #ifdef R_VERSION_
@@ -24,7 +24,6 @@ DataProblem<Integrator, Integrator_noPoly, ORDER, mydim, ndim>::DataProblem(SEXP
     std::vector<UInt> v(deData_.getNumberofData());
     std::iota(v.begin(),v.end(),0);
     GlobalPsi_ = computePsi(v);
-
 }
 
 
@@ -146,8 +145,13 @@ DataProblem<Integrator, Integrator_noPoly, ORDER, mydim, ndim>::computePsi(const
 
 	for(auto it = indices.cbegin(); it != indices.cend(); it++)
 	{
-		// tri_activated = mesh_.findLocationNaive(deData_.getDatum(*it));
-    tri_activated = mesh_.findLocationTree(deData_.getDatum(*it));
+
+    if (deData_.getSearch() == 1) { //use Naive search
+      tri_activated = mesh_.findLocationNaive(deData_.getDatum(*it));
+    } else if (deData_.getSearch() == 2) { //use Tree search (default)
+      tri_activated = mesh_.findLocationTree(deData_.getDatum(*it));
+    }
+
 		if(tri_activated.getId() == Identifier::NVAL)
 		{
 			#ifdef R_VERSION_

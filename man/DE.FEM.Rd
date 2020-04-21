@@ -5,8 +5,8 @@
 \title{Nonparametric density estimation with differential regularization}
 \usage{
 DE.FEM(data, FEMbasis, lambda, fvec=NULL, heatStep=0.1, heatIter=500, stepProposals=NULL,
-tol1=1e-4, tol2=0, print=FALSE, nThreads_int=2, nThreads_l=1, nThreads_fold=1, nfolds=NULL, nsimulations=500, 
-step_method, direction_method, preprocess_method="NoCrossValidation")
+tol1=1e-4, tol2=0, print=FALSE, nThreads_int=2, nThreads_l=1, nThreads_fold=1, nfolds=NULL,
+nsimulations=500, step_method, direction_method, preprocess_method="NoCrossValidation", search = 2)
 }
 \arguments{
 \item{data}{A matrix of dimensions #observations-by-ndim. Data are locations: each row corresponds to one point, 
@@ -65,6 +65,9 @@ cross validation method is performed. If it is \code{SimplifiedCV} a simplified 
 In the latter case the number of smoothing parameters \code{lambda} must be equal to the number of folds \code{nfolds}.
 Default is \code{NULL}.}
 
+\item{search}{An integer specifying the search algorithm to use. It is either 1 (Naive search algorithm) or 2 (Tree search algorithm).
+The default is 2.}
+
 \item{nThread_int}{Integer specifying the number of threads to paralllize the computation of integrals. Default is 2. 
 N.B. Only one between \code{nThread_int}, \code{nThread_l}, \code{nThread_fold} can be 2, the others need to be 1.}
 
@@ -76,6 +79,7 @@ N.B. Only one between \code{nThread_int}, \code{nThread_l}, \code{nThread_fold} 
 }
 \value{
 A list with the following variables:
+\item{\code{treeFEMbasis}}{}
 \item{\code{g}}{A vector of length #\code{nodes} that represents the value of the g-function estimated for each \code{node} of the mesh.
 The density is the exponential of this function.}
 \item{\code{f_init}}{A #\code{nodes}-by-#\code{lambda} parameters matrix. Each column contains the node values of the initial
@@ -84,6 +88,8 @@ density used for the lambda given by the column.}
 input there is a vector of parameters; the scalar given in input otherwise.}
 \item{\code{data}}{A matrix of dimensions #observations-by-ndim containing the data used in the algorithm. They are the 
 same given in input if the domain is 2D pr 3D; they are the original data projected on the mesh if the domain is 2.5D.}
+\item{\code{CV_err}}{A vector of length \code{nfolds} containing the cross validation errors obtained in each fold, if 
+\code{preprocess_method} is either \code{RightCV} or \code{SimplifiedCV}.}
 }
 \description{
 This function implements a nonparametric density estimation method with differential regularization 
@@ -118,7 +124,7 @@ sol <- DE.FEM(data = data, FEMbasis = FEMbasis, lambda = lambda, fvec=NULL, heat
                   heatIter=500, stepProposals=NULL, tol1=1e-4, tol2=0, print=FALSE, nThreads_int=2,
                   nThreads_l=1, nThreads_fold=1, nfolds=NULL, nsimulations=500, 
                   step_method = "Fixed_Step", direction_method = "BFGS",
-                  preprocess_method="NoCrossValidation")
+                  preprocess_method="NoCrossValidation", search = 2)
 
 ## Visualization 
 n = 100

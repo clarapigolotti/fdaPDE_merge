@@ -1021,11 +1021,20 @@ sol <- DE.FEM(data = data, FEMbasis = FEMbasis, lambda = lambda,
 ## Visualization 
 image(FEM(exp(sol$g), FEMbasis))
 
-# 6) direction_method = Gradient
+# 7) direction_method = Gradient
 lambda = 0.1
 sol <- DE.FEM(data = data, FEMbasis = FEMbasis, lambda = lambda,
               step_method = "Fixed_Step", direction_method = "Gradient",
               preprocess_method="NoCrossValidation")
+
+## Visualization 
+image(FEM(exp(sol$g), FEMbasis))
+
+# 8) Naive search algorithm
+lambda = 0.1
+sol <- DE.FEM(data = data, FEMbasis = FEMbasis, lambda = lambda, 
+              step_method = "Fixed_Step", direction_method = "BFGS",
+              preprocess_method="NoCrossValidation", search = 1)
 
 ## Visualization 
 image(FEM(exp(sol$g), FEMbasis))
