@@ -66,7 +66,8 @@ class IntegratorTetrahedronP1{
 		static const std::vector<Real> WEIGHTS;
 		};
 
-		class IntegratorGaussTriangle2{
+// Gauss Legendre quadrature rules
+	class IntegratorGaussTriangle2{
 	private:
 		static const std::vector<Real> w;
 
