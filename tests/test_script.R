@@ -1040,50 +1040,48 @@ sol <- DE.FEM(data = data, FEMbasis = FEMbasis, lambda = lambda,
 image(FEM(exp(sol$g), FEMbasis))
 
 
-# 2.5D -------------
-rm(list=ls())
-
-## Create a 2.5D mesh 
-data(sphereData)
-sphere<-create.mesh.2.5D(sphere$nodes, sphere$triangles)
-# Normalize the sphere
-sum_square = sphere$nodes[,1]^2 + sphere$nodes[,2]^2 + sphere$nodes[,3]^2
-sphere$nodes[,1] = sphere$nodes[,1]  / sqrt(sum_square)
-sphere$nodes[,2] = sphere$nodes[,2]  / sqrt(sum_square)
-sphere$nodes[,3] = sphere$nodes[,3]  / sqrt(sum_square)
-FEMbasis <- create.FEM.basis(sphere)
-
-## Generating data
-library(Directional)
-mu <- c(0, -1, 0)
-mu <- mu / sqrt( sum(mu^2) )
-k=10
-beta=0
-data <- rkent(100, k, mu, beta)
-
-plot(sphere)
-pch3d(data, pch=19, cex=0.1, col="red")
-
-## Density Estimation:
-lambda = 0.01
-sol <- DE.FEM(data = data, FEMbasis = FEMbasis, lambda = lambda, fvec=NULL, heatStep=0.1,
-              heatIter=500, stepProposals=NULL, tol1=1e-4, tol2=0, print=FALSE, nThreads_int=2,
-              nThreads_l=1, nThreads_fold=1, nfolds=NULL, nsimulations=500, 
-              step_method = "Fixed_Step", direction_method = "BFGS",
-              preprocess_method="NoCrossValidation")
-
-## Visualization
-plot(FEM(exp(sol$g), FEMbasis))
-
-plot(sphere)
-pch3d(data, pch=19, cex=0.1, col="red")
-pch3d(sol$data, pch=19, cex=0.1, col="blue")
+# # 2.5D -------------
+# rm(list=ls())
+# 
+# ## Create a 2.5D mesh 
+# data(sphereData)
+# sphere<-create.mesh.2.5D(sphere$nodes, sphere$triangles)
+# # Normalize the sphere
+# sum_square = sphere$nodes[,1]^2 + sphere$nodes[,2]^2 + sphere$nodes[,3]^2
+# sphere$nodes[,1] = sphere$nodes[,1]  / sqrt(sum_square)
+# sphere$nodes[,2] = sphere$nodes[,2]  / sqrt(sum_square)
+# sphere$nodes[,3] = sphere$nodes[,3]  / sqrt(sum_square)
+# FEMbasis <- create.FEM.basis(sphere)
+# 
+# ## Generating data
+# library(Directional)
+# mu <- c(0, -1, 0)
+# mu <- mu / sqrt( sum(mu^2) )
+# k=10
+# beta=0
+# data <- rkent(100, k, mu, beta)
+# 
+# plot(sphere)
+# pch3d(data, pch=19, cex=0.1, col="red")
+# 
+# ## Density Estimation:
+# lambda = 0.01
+# sol <- DE.FEM(data = data, FEMbasis = FEMbasis, lambda = lambda, fvec=NULL, heatStep=0.1,
+#               heatIter=500, stepProposals=NULL, tol1=1e-4, tol2=0, print=FALSE, nThreads_int=2,
+#               nThreads_l=1, nThreads_fold=1, nfolds=NULL, nsimulations=500, 
+#               step_method = "Fixed_Step", direction_method = "BFGS",
+#               preprocess_method="NoCrossValidation")
+# 
+# ## Visualization
+# plot(FEM(exp(sol$g), FEMbasis))
+# 
+# plot(sphere)
+# pch3d(data, pch=19, cex=0.1, col="red")
+# pch3d(sol$data, pch=19, cex=0.1, col="blue")
 
 
 # 3D -------------------------------------------
 rm(list=ls())
-
-library(mvtnorm)
 
 ## Create a 3D mesh 
 data(sphere3Ddata)
@@ -1093,9 +1091,11 @@ FEMbasis <- create.FEM.basis(sphere3D)
 
 ## Generate data
 fact = 0.01
-sigma <- fact * diag(3)
-mu <- c(0,0,0)
-data <- rmvnorm(100, mean=mu, sigma=sigma)
+n = 100
+data_x <- fact*rnorm(n)
+data_y <- fact*rnorm(n)
+data_z <- fact*rnorm(n)
+data <- cbind(data_x, data_y, data_z)
 
 ## Density Estimation:
 lambda = 1e-5
